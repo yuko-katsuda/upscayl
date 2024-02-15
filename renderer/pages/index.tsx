@@ -102,6 +102,7 @@ const Home = () => {
       /Upscayl\/([\d\.]+\d+)/,
     )[1];
     setVersion(upscaylVersion);
+    window.electron.send("hoge");
   }, []);
 
   // ELECTRON EVENT LISTENERS
@@ -127,6 +128,10 @@ const Home = () => {
         resetImagePaths();
       }
     };
+    // LOG
+    window.electron.on("hoge2", (_, data: string) => {
+      console.log(`hoge2`);
+    });
     // OS
     window.electron.on(
       COMMAND.OS,

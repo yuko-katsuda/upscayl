@@ -1,4 +1,4 @@
-import { BrowserWindow, shell } from "electron";
+import { BrowserWindow, shell, ipcMain } from "electron";
 import { getPlatform } from "./utils/get-device-specs";
 import { join } from "path";
 import COMMAND from "../common/commands";
@@ -50,6 +50,17 @@ const createMainWindow = () => {
   fetchLocalStorage();
 
   mainWindow.webContents.send(COMMAND.OS, getPlatform());
+
+  ipcMain.on("hoge", () => {
+    console.log("🚀 hoge");
+  });
+
+  setTimeout(() => {
+    if (!mainWindow) return;
+    mainWindow.webContents.send("hoge2", "hoge2");
+  }, 2000);
+  
+  mainWindow.webContents.openDevTools();
 
   mainWindow.setMenuBarVisibility(false);
 };
