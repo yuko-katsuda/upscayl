@@ -12,7 +12,7 @@ function Spinner() {
       xmlns="http://www.w3.org/2000/svg"
       className="h-16 w-16 rounded-full bg-base-300 p-2 text-base-content">
       <g fill="none" fill-rule="evenodd">
-        <g transform="translate(2 1)" stroke="currentColor" stroke-width="1.5">
+        <g transform="translate(2 1)" stroke="currentColor" strokeWidth="1.5">
           <circle
             cx="42.601"
             cy="11.462"
