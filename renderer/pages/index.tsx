@@ -132,6 +132,42 @@ const Home = () => {
     window.electron.on("hoge2", (_, data: string) => {
       console.log(`hoge2`);
     });
+    window.electron.on("post", (_, data: string) => {
+      // dataにいろいろパラメータが入ってるから、それを使ってアプリを動かすなんかしらのイベントを探して動かす
+      // 画像の生成が完了したら
+
+      const imagePath = "C:\/Users\/katsu\/Downloads\/2024_01_01__00_00_06_580__304__12s.jpg";
+      const outputPath = "C:\/Users\/katsu\/Downloads";
+      const model = "realesrgan-x4plus";
+      const gpuId = "2";
+      const saveImageAs = "jpg";
+      const scale = "2";
+      const overwrite = true;
+      const noImageProcessing = false;
+      const compression = 20;
+      logit("🏁 UPSCAYL : " + imagePath);
+      logit("🏁 UPSCAYL : " + outputPath);
+      logit("🏁 UPSCAYL : " + model);
+      logit("🏁 UPSCAYL : " + gpuId);
+      logit("🏁 UPSCAYL : " + saveImageAs);
+      logit("🏁 UPSCAYL : " + scale);
+      logit("🏁 UPSCAYL : " + overwrite);
+      logit("🏁 UPSCAYL : " + noImageProcessing);
+      logit("🏁 UPSCAYL : " + compression);
+
+      window.electron.send<ImageUpscaylPayload>(COMMAND.UPSCAYL, {
+        imagePath,
+        outputPath,
+        model,
+        gpuId: gpuId.length === 0 ? null : gpuId,
+        saveImageAs,
+        scale,
+        overwrite,
+        noImageProcessing,
+        compression: compression.toString(),
+      });
+      
+    });
     // OS
     window.electron.on(
       COMMAND.OS,
@@ -194,6 +230,7 @@ const Home = () => {
       setUpscaledImagePath(data);
       logit("upscaledImagePath: ", data);
       logit(`💯 UPSCAYL_DONE: `, data);
+      window.electron.send("generate_complete");
     });
     // FOLDER UPSCAYL DONE
     window.electron.on(COMMAND.FOLDER_UPSCAYL_DONE, (_, data: string) => {
@@ -503,7 +540,15 @@ const Home = () => {
           noImageProcessing,
           compression: compression.toString(),
         });
-        logit("🏁 UPSCAYL");
+        logit("🏁 UPSCAYL : " + imagePath);
+        logit("🏁 UPSCAYL : " + outputPath);
+        logit("🏁 UPSCAYL : " + model);
+        logit("🏁 UPSCAYL : " + gpuId);
+        logit("🏁 UPSCAYL : " + saveImageAs);
+        logit("🏁 UPSCAYL : " + scale);
+        logit("🏁 UPSCAYL : " + overwrite);
+        logit("🏁 UPSCAYL : " + noImageProcessing);
+        logit("🏁 UPSCAYL : " + compression);
       }
     } else {
       alert(`Please select an image to upscale`);
