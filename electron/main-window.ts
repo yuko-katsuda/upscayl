@@ -12,9 +12,9 @@ import { Hono } from 'hono'
 
 let mainWindow: BrowserWindow | undefined;
 
+// 自動処理用サーバ立ち上げ
 const app = new Hono()
 app.get('/', (c) => c.text('Hello Node.js!'))
-
 
 serve({
   fetch: app.fetch,
@@ -64,21 +64,18 @@ const createMainWindow = () => {
 
   mainWindow.webContents.send(COMMAND.OS, getPlatform());
 
-  ipcMain.on("hoge", () => {
-    console.log("🚀 hoge");
-
-
-  });
+  // ipcMain.on("hoge", () => {
+  //   console.log("🚀 hoge");
+  // });
 
   // ipcMain.on("generate_complete", () => {
   //   console.log("COMLETE!!!!!!!");
   // });
 
-  setTimeout(() => {
-    if (!mainWindow) return;
-    mainWindow.webContents.send("hoge2", "hoge2");
-    
-  }, 2000);
+  // setTimeout(() => {
+  //   if (!mainWindow) return;
+  //   mainWindow.webContents.send("hoge2", "hoge2");
+  // }, 2000);
 
   // app.post('/upscale', (c:any) => {
   //   if (!mainWindow) return;
@@ -105,6 +102,9 @@ const createMainWindow = () => {
     if (!mainWindow) {
       return c.json({ error: 'Main window is not available', status: 'error' });
     }
+
+    const data = await c.req.json(); // JSONデータを解析
+    // console.log("📝 POSTDATA", data);
   
     try {
       // Promiseをawaitで待機
@@ -112,17 +112,16 @@ const createMainWindow = () => {
         // タイムアウトを設定
         const timeout = setTimeout(() => {
           reject(new Error("Timeout waiting for generate_complete"));
-        }, 60000); // 10秒後にタイムアウト
+        }, 60000); // 60秒後にタイムアウト
   
         ipcMain.once("generate_complete", () => {
           clearTimeout(timeout); // タイムアウトをクリア
-          console.log("🙌 YAY!! COMPLETE!!!!!!!");
+          console.log("🙌 YAY!! GENERATE COMPLETED!!");
           resolve(undefined);
         });
   
         // ここでアップスケール処理を開始
-        // mainWindow.webContents.send(...) を使用
-        mainWindow?.webContents.send("post", "c.data");
+        mainWindow?.webContents.send("post", data);
       });
   
       // 正常終了した場合のレスポンス

@@ -129,31 +129,27 @@ const Home = () => {
       }
     };
     // LOG
-    window.electron.on("hoge2", (_, data: string) => {
-      console.log(`hoge2`);
-    });
+    // window.electron.on("hoge2", (_, data: string) => {
+    //   console.log(`hoge2`);
+    // });
     window.electron.on("post", (_, data: string) => {
+
+      // // JSON文字列をオブジェクトに変換
+      // const parsedData = JSON.parse(data);
+
+      // console.log(parsedData.imagePath);
       // dataにいろいろパラメータが入ってるから、それを使ってアプリを動かすなんかしらのイベントを探して動かす
       // 画像の生成が完了したら
 
-      const imagePath = "C:\/Users\/katsu\/Downloads\/2024_01_01__00_00_06_580__304__12s.jpg";
-      const outputPath = "C:\/Users\/katsu\/Downloads";
-      const model = "realesrgan-x4plus";
-      const gpuId = "2";
-      const saveImageAs = "jpg";
-      const scale = "2";
-      const overwrite = true;
-      const noImageProcessing = false;
-      const compression = 20;
-      logit("🏁 UPSCAYL : " + imagePath);
-      logit("🏁 UPSCAYL : " + outputPath);
-      logit("🏁 UPSCAYL : " + model);
-      logit("🏁 UPSCAYL : " + gpuId);
-      logit("🏁 UPSCAYL : " + saveImageAs);
-      logit("🏁 UPSCAYL : " + scale);
-      logit("🏁 UPSCAYL : " + overwrite);
-      logit("🏁 UPSCAYL : " + noImageProcessing);
-      logit("🏁 UPSCAYL : " + compression);
+      const imagePath = data.imagePath;
+      const outputPath = data.outputPath;
+      const model = data.model;
+      const gpuId = data.gpuId;
+      const saveImageAs = data.saveImageAs;
+      const scale = data.scale;
+      const overwrite = data.overwrite;
+      const noImageProcessing = data.noImageProcessing;
+      const compression = data.compression;
 
       window.electron.send<ImageUpscaylPayload>(COMMAND.UPSCAYL, {
         imagePath,
