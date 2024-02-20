@@ -37,6 +37,18 @@ import { NewsModal } from "@/components/NewsModal";
 import { newsAtom, showNewsModalAtom } from "@/atoms/newsAtom";
 import matter from "gray-matter";
 
+export interface UpscaleData {
+  imagePath: string;
+  outputPath: string;
+  model: string;
+  gpuId: string;
+  saveImageAs: string;
+  scale: string;
+  overwrite: boolean;
+  noImageProcessing: boolean;
+  compression: number;
+}
+
 const Home = () => {
   const allowedFileTypes = ["png", "jpg", "jpeg", "webp"];
 
@@ -132,15 +144,7 @@ const Home = () => {
     // window.electron.on("hoge2", (_, data: string) => {
     //   console.log(`hoge2`);
     // });
-    window.electron.on("post", (_, data: string) => {
-
-      // // JSON文字列をオブジェクトに変換
-      // const parsedData = JSON.parse(data);
-
-      // console.log(parsedData.imagePath);
-      // dataにいろいろパラメータが入ってるから、それを使ってアプリを動かすなんかしらのイベントを探して動かす
-      // 画像の生成が完了したら
-
+    window.electron.on("post", (_, data: UpscaleData) => {
       const imagePath = data.imagePath;
       const outputPath = data.outputPath;
       const model = data.model;
@@ -226,7 +230,14 @@ const Home = () => {
       setUpscaledImagePath(data);
       logit("upscaledImagePath: ", data);
       logit(`💯 UPSCAYL_DONE: `, data);
-      window.electron.send("generate_complete");
+
+
+
+      window.electron.send("generate_complete", data);
+
+
+
+      
     });
     // FOLDER UPSCAYL DONE
     window.electron.on(COMMAND.FOLDER_UPSCAYL_DONE, (_, data: string) => {

@@ -108,16 +108,17 @@ const createMainWindow = () => {
   
     try {
       // Promiseをawaitで待機
-      await new Promise((resolve, reject) => {
+      const generate = await new Promise((resolve, reject) => {
         // タイムアウトを設定
         const timeout = setTimeout(() => {
           reject(new Error("Timeout waiting for generate_complete"));
         }, 60000); // 60秒後にタイムアウト
-  
-        ipcMain.once("generate_complete", () => {
+
+        // 生成が完了したらresolveを呼ぶ
+        ipcMain.once("generate_complete", (e, d) => {
           clearTimeout(timeout); // タイムアウトをクリア
-          console.log("🙌 YAY!! GENERATE COMPLETED!!");
-          resolve(undefined);
+          console.log("🙌 YAY!! GENERATE COMPLETED!!", d);
+          resolve(d);
         });
   
         // ここでアップスケール処理を開始
@@ -125,7 +126,7 @@ const createMainWindow = () => {
       });
   
       // 正常終了した場合のレスポンス
-      return c.json({ exportPath: `🙌 YAY!! //export path//`, status: 'ok' });
+      return c.json({ exportPath: generate, status: 'ok'});
 
     } catch (error) {
       // エラーハンドリング
